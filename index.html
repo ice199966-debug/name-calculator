@@ -177,12 +177,11 @@
         .cell-wai { grid-column: 1; grid-row: 2; }
 
         /* 納音：跨越第1、2列，垂直居中，讓其中心位於天格與人格的中線 */
+        /* 關鍵：不使用 max-height，讓內容自然撐開，由 align-self: center 居中 */
         .cell-nayin {
             grid-column: 3;
             grid-row: 1 / 3;
             align-self: center;
-            min-height: 70px;
-            max-height: 90px;
         }
 
         /* 輸入方格：字體與其他格五行文字完全一致 */
@@ -286,13 +285,6 @@
                 font-weight: 600;
                 line-height: 1.6;
             }
-
-            /* 納音：手機端保持垂直居中，確保位於天格與人格中線 */
-            .cell-nayin {
-                align-self: center;
-                min-height: 60px;
-                max-height: 80px;
-            }
         }
 
         /* 小手機 */
@@ -310,12 +302,6 @@
                 font-weight: 600;
                 line-height: 1.6;
             }
-
-            .cell-nayin {
-                align-self: center;
-                min-height: 56px;
-                max-height: 76px;
-            }
         }
 
         /* 超小手機 */
@@ -325,10 +311,6 @@
                 font-size: 15px;
                 font-weight: 600;
                 line-height: 1.6;
-            }
-            .cell-nayin {
-                min-height: 54px;
-                max-height: 72px;
             }
         }
     </style>
