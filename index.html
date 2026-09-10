@@ -175,18 +175,24 @@
         .cell-custom {
             grid-column: 1;
             grid-row: 3;
-            padding: 6px 4px;
+            padding: 4px 2px;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
-            min-height: 90px;
+            overflow: visible;
+            min-height: 100px;
+            background: #fcf8f4;
+            border-radius: 16px;
+            border: 1px solid #eee5dd;
+            position: relative;
+            z-index: 1;
         }
         .cell-custom textarea {
-            width: 3.2em;
-            height: 2.8em;
-            font-size: 22px;
-            line-height: 1.3;
+            width: 100%;
+            height: 100%;
+            min-height: 90px;
+            font-size: 24px;
+            line-height: 1.4;
             text-align: center;
             font-family: inherit;
             font-weight: 800;
@@ -194,7 +200,7 @@
             border: none;
             background: transparent;
             outline: none;
-            padding: 0;
+            padding: 4px 2px;
             margin: 0;
             resize: none;
             overflow: hidden;
@@ -203,7 +209,7 @@
         }
         .cell-custom textarea:focus {
             background: rgba(198,142,71,0.08);
-            border-radius: 4px;
+            border-radius: 8px;
         }
 
         .info-row {
@@ -243,6 +249,7 @@
             padding-top: 14px;
         }
 
+        /* 平板 / 大手機 */
         @media (max-width: 480px) {
             .app { padding: 16px 12px; }
             .grid-cross { gap: 5px; }
@@ -251,14 +258,47 @@
             .info-item .value { font-size: 17px; }
             .header h1 { font-size: 20px; }
             .btn-calc { font-size: 16px; padding: 12px; }
-            .cell-custom { min-height: 80px; }
-            .cell-custom textarea { font-size: 20px; width: 3.2em; height: 2.8em; }
+
+            .cell-custom {
+                min-height: 95px;
+                padding: 4px 2px;
+            }
+            .cell-custom textarea {
+                min-height: 85px;
+                font-size: 22px;
+                line-height: 1.4;
+                padding: 2px 0;
+            }
         }
+
+        /* 小手機 */
         @media (max-width: 380px) {
             .grid-cross { gap: 4px; }
             .cell .number { font-size: 18px; }
-            .cell-custom { min-height: 70px; }
-            .cell-custom textarea { font-size: 18px; width: 3.2em; height: 2.8em; }
+
+            .cell-custom {
+                min-height: 85px;
+                padding: 3px 1px;
+            }
+            .cell-custom textarea {
+                min-height: 78px;
+                font-size: 20px;
+                line-height: 1.35;
+                padding: 2px 0;
+            }
+        }
+
+        /* 超小手機 */
+        @media (max-width: 340px) {
+            .cell-custom {
+                min-height: 78px;
+                padding: 2px 1px;
+            }
+            .cell-custom textarea {
+                min-height: 72px;
+                font-size: 18px;
+                line-height: 1.3;
+            }
         }
     </style>
 </head>
@@ -322,7 +362,7 @@
                 <div class="number" id="rNayinName" style="font-size:22px;">-</div>
                 <div class="wuxing" id="rNayinWx">-</div>
             </div>
-            <!-- 兩列輸入方格：強制前 2 後 3 -->
+            <!-- 兩列輸入方格 -->
             <div class="cell cell-custom">
                 <textarea id="customChar" maxlength="6" wrap="off" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"></textarea>
             </div>
@@ -345,7 +385,7 @@
 
 <script>
 // ============================================================
-//  1. 載入外部筆劃資料庫（kangxi-data.js）
+//  1. 載入外部筆劃資料庫
 // ============================================================
 let STROKE_MAP = window.KANGXI_DATA || {};
 
@@ -370,7 +410,7 @@ const RADICAL_WUXING = {
 };
 
 // ============================================================
-//  3. 複合字拆解表（融合比對用）
+//  3. 複合字拆解表
 // ============================================================
 const COMPOUND_DECOMPOSITION = {
     '振': ['手', '辰'],
@@ -624,24 +664,19 @@ function renderResult(data, birthYear) {
 }
 
 // ============================================================
-//  7. 格式化：強制前 2 後 3 換行
+//  7. 格式化：強制前 2 後 3
 // ============================================================
 function formatWuxing(str) {
     if (!str) return '';
-    // 移除所有空白與換行
     let cleaned = str.replace(/[\s\n\r]/g, '');
-    // 只保留五行字元（避免注音或英數混入）
     cleaned = cleaned.replace(/[^金木水火土]/g, '');
-    // 限制最多 5 字
     if (cleaned.length > 5) cleaned = cleaned.slice(0, 5);
-    // 超過 2 字就換行
     if (cleaned.length > 2) {
         return cleaned.slice(0, 2) + '\n' + cleaned.slice(2);
     }
     return cleaned;
 }
 
-// 自動填入名字最後一字的融合五行
 function autoFillCustomWuxing() {
     const input = document.getElementById('customChar');
     if (!input) return;
@@ -715,25 +750,21 @@ function retryWithManual() {
 }
 
 // ============================================================
-//  9. 自訂輸入框：支援 IME 組字，避免微軟新注音出錯
+//  9. 自訂輸入框：支援 IME 組字
 // ============================================================
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('calcBtn').addEventListener('click', calculate);
 
     const customInput = document.getElementById('customChar');
     if (customInput) {
-        // IME 組字狀態旗標
         let isComposing = false;
 
-        // 組字開始：暫停格式化
         customInput.addEventListener('compositionstart', function() {
             isComposing = true;
         });
 
-        // 組字結束：選字完成後才格式化
         customInput.addEventListener('compositionend', function() {
             isComposing = false;
-            // 延遲一下讓瀏覽器先完成字元插入
             setTimeout(() => {
                 const formatted = formatWuxing(customInput.value);
                 if (customInput.value !== formatted) {
@@ -743,9 +774,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 0);
         });
 
-        // 輸入事件：組字中不處理，避免打斷 IME
         customInput.addEventListener('input', function(e) {
-            if (isComposing) return;  // 關鍵：組字中不做任何事
+            if (isComposing) return;
             const formatted = formatWuxing(this.value);
             if (this.value !== formatted) {
                 this.value = formatted;
@@ -753,12 +783,10 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        // 貼上時格式化
         customInput.addEventListener('paste', function(e) {
             e.preventDefault();
             const pasted = (e.clipboardData || window.clipboardData).getData('text');
             const current = this.value;
-            // 取得游標前的內容 + 貼上的內容
             const start = this.selectionStart;
             const end = this.selectionEnd;
             const before = current.slice(0, start);
@@ -769,7 +797,6 @@ document.addEventListener('DOMContentLoaded', function() {
             this.setSelectionRange(formatted.length, formatted.length);
         });
 
-        // 失焦時也格式化一次，確保最終結果正確
         customInput.addEventListener('blur', function() {
             const formatted = formatWuxing(this.value);
             if (this.value !== formatted) {
