@@ -171,7 +171,7 @@
         .cell-wai { grid-column: 1; grid-row: 2; }
         .cell-nayin { grid-column: 3; grid-row: 2; }
 
-        /* 輸入方格：大幅增加高度，確保兩行完整顯示 */
+        /* 輸入方格：字體與其他格五行一致（15px） */
         .cell-custom {
             grid-column: 1;
             grid-row: 3;
@@ -186,12 +186,12 @@
         }
         .cell-custom textarea {
             width: 100%;
-            height: 150px;
-            font-size: 24px;
+            height: 68px;
+            font-size: 15px;
+            font-weight: 600;
             line-height: 1.6;
             text-align: center;
             font-family: inherit;
-            font-weight: 800;
             color: #3e2c1b;
             border: none;
             background: transparent;
@@ -260,8 +260,8 @@
             .btn-calc { font-size: 16px; padding: 12px; }
 
             .cell-custom textarea {
-                height: 160px;
-                font-size: 22px;
+                height: 72px;
+                font-size: 15px;
                 line-height: 1.6;
             }
         }
@@ -272,8 +272,8 @@
             .cell .number { font-size: 18px; }
 
             .cell-custom textarea {
-                height: 150px;
-                font-size: 20px;
+                height: 68px;
+                font-size: 15px;
                 line-height: 1.6;
             }
         }
@@ -281,8 +281,8 @@
         /* 超小手機 */
         @media (max-width: 340px) {
             .cell-custom textarea {
-                height: 140px;
-                font-size: 18px;
+                height: 64px;
+                font-size: 15px;
                 line-height: 1.6;
             }
         }
