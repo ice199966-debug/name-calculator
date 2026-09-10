@@ -189,7 +189,7 @@
             z-index: 2;
         }
 
-        /* 拆字五行顯示格：字體與其他格五行文字完全一致 */
+        /* 拆字五行顯示格：可自動填入，也可手動編輯 */
         .cell-custom {
             grid-column: 1;
             grid-row: 3;
@@ -226,10 +226,11 @@
             box-sizing: border-box;
             -webkit-text-size-adjust: 100%;
             text-size-adjust: 100%;
-            cursor: default;
+            cursor: text;
         }
         .cell-custom textarea:focus {
-            background: transparent;
+            background: rgba(198,142,71,0.08);
+            border-radius: 8px;
         }
 
         .info-row {
@@ -381,7 +382,7 @@
                 <div class="wuxing" id="rNayinWx">-</div>
             </div>
             <div class="cell cell-custom">
-                <textarea id="customChar" readonly wrap="off" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"></textarea>
+                <textarea id="customChar" maxlength="6" wrap="off" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"></textarea>
             </div>
         </div>
 
@@ -654,24 +655,32 @@ function formatWuxing(str) {
     return cleaned;
 }
 
-// 依「名字最後一個字」自動填入拆字五行，查無資料則顯示空白
+// ============================================================
+//  7. 自動填入拆字五行（可被手動編輯覆蓋）
+//     規則：若欄位為空、或內容等於上次自動填入的值，才覆蓋；
+//           使用者手動編輯後不再自動覆蓋。
+// ============================================================
+let lastAutoFilled = null;
+
 function autoFillCustomWuxing() {
     const input = document.getElementById('customChar');
     if (!input) return;
 
     const givenName = document.getElementById('givenName').value.trim();
-    if (!givenName) {
-        input.value = '';
-        return;
-    }
-
     const chars = [...givenName];
-    const lastChar = chars[chars.length - 1];
-    input.value = formatWuxing(getCharWuxing(lastChar));
+    const lastChar = chars.length > 0 ? chars[chars.length - 1] : '';
+    const newValue = lastChar ? formatWuxing(getCharWuxing(lastChar)) : '';
+
+    // 只有在「空欄位」或「內容與上次自動填入相同」時才覆蓋
+    const current = input.value;
+    if (current === '' || current === lastAutoFilled) {
+        input.value = newValue;
+    }
+    lastAutoFilled = newValue;
 }
 
 // ============================================================
-//  7. 互動
+//  8. 互動
 // ============================================================
 function calculate() {
     try {
@@ -728,15 +737,66 @@ function retryWithManual() {
 }
 
 // ============================================================
-//  8. 初始化
+//  9. 初始化：自訂輸入框支援 IME 組字
 // ============================================================
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('calcBtn').addEventListener('click', calculate);
 
-    // 顯示格為唯讀，內容由名字最後一個字的拆字五行決定
     const customInput = document.getElementById('customChar');
     if (customInput) {
-        customInput.setAttribute('readonly', 'readonly');
+        let isComposing = false;
+
+        customInput.addEventListener('compositionstart', function() {
+            isComposing = true;
+        });
+
+        customInput.addEventListener('compositionend', function() {
+            isComposing = false;
+            setTimeout(() => {
+                // 使用者組字完成後，將內容格式化（前2後3）
+                const formatted = formatWuxing(customInput.value);
+                if (customInput.value !== formatted) {
+                    customInput.value = formatted;
+                    customInput.setSelectionRange(formatted.length, formatted.length);
+                }
+                // 手動編輯後，避免下次自動填入覆蓋
+                lastAutoFilled = '__user_edited__';
+            }, 0);
+        });
+
+        customInput.addEventListener('input', function(e) {
+            if (isComposing) return;
+            const formatted = formatWuxing(this.value);
+            if (this.value !== formatted) {
+                this.value = formatted;
+                this.setSelectionRange(formatted.length, formatted.length);
+            }
+            // 手動編輯後，避免下次自動填入覆蓋
+            lastAutoFilled = '__user_edited__';
+        });
+
+        customInput.addEventListener('paste', function(e) {
+            e.preventDefault();
+            const pasted = (e.clipboardData || window.clipboardData).getData('text');
+            const current = this.value;
+            const start = this.selectionStart;
+            const end = this.selectionEnd;
+            const before = current.slice(0, start);
+            const after = current.slice(end);
+            const combined = before + pasted + after;
+            const formatted = formatWuxing(combined);
+            this.value = formatted;
+            this.setSelectionRange(formatted.length, formatted.length);
+            // 手動編輯後，避免下次自動填入覆蓋
+            lastAutoFilled = '__user_edited__';
+        });
+
+        customInput.addEventListener('blur', function() {
+            const formatted = formatWuxing(this.value);
+            if (this.value !== formatted) {
+                this.value = formatted;
+            }
+        });
     }
 
     calculate();
