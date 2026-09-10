@@ -171,25 +171,24 @@
         .cell-wai { grid-column: 1; grid-row: 2; }
         .cell-nayin { grid-column: 3; grid-row: 2; }
 
-        /* 輸入方格：固定高度，確保兩行完整顯示 */
+        /* 輸入方格：大幅增加高度，確保兩行完整顯示 */
         .cell-custom {
             grid-column: 1;
             grid-row: 3;
+            padding: 4px;
             display: flex;
             justify-content: center;
             align-items: center;
             background: #fcf8f4;
             border-radius: 16px;
             border: 1px solid #eee5dd;
-            padding: 6px 4px;
-            min-height: 100px;
             overflow: visible;
         }
         .cell-custom textarea {
             width: 100%;
-            height: 88px;
+            height: 150px;
             font-size: 24px;
-            line-height: 1.4;
+            line-height: 1.6;
             text-align: center;
             font-family: inherit;
             font-weight: 800;
@@ -197,13 +196,16 @@
             border: none;
             background: transparent;
             outline: none;
-            padding: 0;
-            margin: 0;
+            padding: 0 !important;
+            margin: 0 !important;
             resize: none;
             overflow: hidden;
             white-space: pre;
             letter-spacing: 0;
             display: block;
+            -webkit-appearance: none;
+            appearance: none;
+            box-sizing: border-box;
         }
         .cell-custom textarea:focus {
             background: rgba(198,142,71,0.08);
@@ -257,14 +259,10 @@
             .header h1 { font-size: 20px; }
             .btn-calc { font-size: 16px; padding: 12px; }
 
-            .cell-custom {
-                min-height: 110px;
-                padding: 6px 4px;
-            }
             .cell-custom textarea {
-                height: 98px;
+                height: 160px;
                 font-size: 22px;
-                line-height: 1.5;
+                line-height: 1.6;
             }
         }
 
@@ -273,27 +271,19 @@
             .grid-cross { gap: 4px; }
             .cell .number { font-size: 18px; }
 
-            .cell-custom {
-                min-height: 105px;
-                padding: 5px 3px;
-            }
             .cell-custom textarea {
-                height: 94px;
+                height: 150px;
                 font-size: 20px;
-                line-height: 1.5;
+                line-height: 1.6;
             }
         }
 
         /* 超小手機 */
         @media (max-width: 340px) {
-            .cell-custom {
-                min-height: 100px;
-                padding: 4px 2px;
-            }
             .cell-custom textarea {
-                height: 90px;
+                height: 140px;
                 font-size: 18px;
-                line-height: 1.5;
+                line-height: 1.6;
             }
         }
     </style>
