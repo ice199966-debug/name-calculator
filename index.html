@@ -7,6 +7,10 @@
     <script src="kangxi-data.js"></script>
     <style>
         * { margin:0; padding:0; box-sizing:border-box; }
+        html {
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+        }
         body {
             font-family: 'PingFang TC', 'Helvetica Neue', sans-serif;
             background: #f5efe9;
@@ -15,6 +19,8 @@
             align-items: center;
             justify-content: center;
             padding: 16px;
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
         }
         .app {
             max-width: 520px;
@@ -169,9 +175,15 @@
         .cell-di  { grid-column: 2; grid-row: 3; }
         .cell-zong{ grid-column: 2; grid-row: 4; }
         .cell-wai { grid-column: 1; grid-row: 2; }
-        .cell-nayin { grid-column: 3; grid-row: 2; }
 
-        /* 輸入方格：字體與其他格五行一致（15px） */
+        .cell-nayin {
+            grid-column: 3;
+            grid-row: 1 / 3;
+            align-self: center;
+            max-height: 80px;
+        }
+
+        /* 輸入方格：字體與其他格五行文字完全一致 */
         .cell-custom {
             grid-column: 1;
             grid-row: 3;
@@ -206,6 +218,8 @@
             -webkit-appearance: none;
             appearance: none;
             box-sizing: border-box;
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
         }
         .cell-custom textarea:focus {
             background: rgba(198,142,71,0.08);
@@ -259,9 +273,16 @@
             .header h1 { font-size: 20px; }
             .btn-calc { font-size: 16px; padding: 12px; }
 
+            /* 五行文字與輸入格字體保持一致 */
+            .cell .wuxing {
+                font-size: 15px;
+                font-weight: 600;
+                padding: 2px 6px;
+            }
             .cell-custom textarea {
                 height: 72px;
                 font-size: 15px;
+                font-weight: 600;
                 line-height: 1.6;
             }
         }
@@ -271,9 +292,14 @@
             .grid-cross { gap: 4px; }
             .cell .number { font-size: 18px; }
 
+            .cell .wuxing {
+                font-size: 15px;
+                font-weight: 600;
+            }
             .cell-custom textarea {
                 height: 68px;
                 font-size: 15px;
+                font-weight: 600;
                 line-height: 1.6;
             }
         }
@@ -283,6 +309,7 @@
             .cell-custom textarea {
                 height: 64px;
                 font-size: 15px;
+                font-weight: 600;
                 line-height: 1.6;
             }
         }
@@ -348,7 +375,6 @@
                 <div class="number" id="rNayinName" style="font-size:22px;">-</div>
                 <div class="wuxing" id="rNayinWx">-</div>
             </div>
-            <!-- 兩列輸入方格 -->
             <div class="cell cell-custom">
                 <textarea id="customChar" maxlength="6" wrap="off" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"></textarea>
             </div>
