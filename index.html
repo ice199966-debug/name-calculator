@@ -176,12 +176,14 @@
         .cell-zong{ grid-column: 2; grid-row: 4; }
         .cell-wai { grid-column: 1; grid-row: 2; }
 
-        /* 納音：跨越第1、2列，垂直居中，讓其中心位於天格與人格的中線 */
-        /* 關鍵：不使用 max-height，讓內容自然撐開，由 align-self: center 居中 */
+        /* 納音：位於第2列(人格)，用 translateY(-50%) 把它往上推到天格與人格的交界線上 */
         .cell-nayin {
             grid-column: 3;
-            grid-row: 1 / 3;
-            align-self: center;
+            grid-row: 2;
+            align-self: start;
+            transform: translateY(-50%);
+            position: relative;
+            z-index: 2;
         }
 
         /* 輸入方格：字體與其他格五行文字完全一致 */
